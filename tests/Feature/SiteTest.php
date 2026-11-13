@@ -1,6 +1,5 @@
 <?php
 
-use AdminPhp\Models\Setting;
 use App\AdminPhp\Modules\ArticleModule;
 use App\AdminPhp\Modules\PageModule;
 use App\Models\Article;
@@ -14,19 +13,15 @@ function textBlock(string $text): array
     return ['type' => 'text', 'content' => ['body' => ['fr' => ['type' => 'doc', 'content' => [['type' => 'paragraph', 'content' => [['type' => 'text', 'text' => $text]]]]]]]];
 }
 
-it('shows the homepage chosen in the settings with the latest articles', function () {
-    $home = Page::factory()->published()->create(['title' => ['fr' => 'Bienvenue']]);
-    $home->blocks()->create(['editor_name' => 'content', 'type' => 'text', 'position' => 0, 'content' => textBlock('Bonjour à tous')['content']]);
-    Setting::query()->create(['key' => 'homepage', 'value' => $home->id]);
-    Article::factory()->published()->create(['title' => ['fr' => 'Article en ligne']]);
-    Article::factory()->create(['title' => ['fr' => 'Article brouillon']]);
-
+it('presents AdminPHP on the homepage', function () {
     $this->get('/')
         ->assertOk()
-        ->assertSee('Bienvenue')
-        ->assertSee('Bonjour à tous')
-        ->assertSee('Article en ligne')
-        ->assertDontSee('Article brouillon');
+        ->assertSee('Le CMS Laravel qui reste')
+        ->assertSee('composer require adminphp-cms/core')
+        ->assertSee('&#123;&#123;-- projects/show.blade.php --&#125;&#125;', false)
+        ->assertSee('{{ $project->title }}', false)
+        ->assertSee('@foreach', false)
+        ->assertSee('https://github.com/adminphp-cms/starter');
 });
 
 it('lists only the articles online, newest first', function () {
