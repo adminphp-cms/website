@@ -12,6 +12,8 @@ return new class extends Migration
             $table->ulid('id')->primary();
             $table->jsonb('title');
             $table->string('slug')->unique();
+            $table->jsonb('lead')->nullable();
+            $table->ulid('cover')->nullable();
             $table->publication();
             $table->timestamps();
             $table->softDeletes();
