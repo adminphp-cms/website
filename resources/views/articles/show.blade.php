@@ -13,8 +13,8 @@
             @endif
         </header>
 
-        @if ($article->coverAsset)
-            <x-adminphp::image :asset="$article->coverAsset" sizes="(min-width: 768px) 768px, 100vw" loading="eager" class="mb-10 w-full rounded-xl" />
+        @if ($article->coverMedia)
+            <x-adminphp::image :media="$article->coverMedia" sizes="(min-width: 768px) 768px, 100vw" loading="eager" class="mb-10 w-full rounded-xl" />
         @endif
 
         <x-blocks :blocks="$article->blocks" />

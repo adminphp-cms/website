@@ -2,9 +2,9 @@
 
 namespace App\AdminPhp\Blocks;
 
-use Gmarineau\AdminPhp\Blocks\Block;
-use Gmarineau\AdminPhp\Fields\Image;
-use Gmarineau\AdminPhp\Fields\Text;
+use AdminPhp\Blocks\Block;
+use AdminPhp\Fields\Image;
+use AdminPhp\Fields\Text;
 
 class ImageBlock extends Block
 {
@@ -14,7 +14,8 @@ class ImageBlock extends Block
     {
         return [
             Image::make('image')->label('Image')->required(),
-            Text::make('alt')->label('Texte alternatif')->translatable(),
+            Text::make('alt')->label('Texte alternatif')->translatable()
+                ->note('Décrit l’image pour les personnes qui ne la voient pas.'),
             Text::make('caption')->label('Légende')->translatable(),
         ];
     }

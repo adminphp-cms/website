@@ -2,19 +2,21 @@
 
 namespace Database\Seeders;
 
+use AdminPhp\Actions\PublishItem;
+use AdminPhp\Actions\SaveDraft;
+use AdminPhp\Actions\SaveModuleContent;
+use AdminPhp\Actions\StoreMedia;
+use AdminPhp\Actions\SyncMediaUsages;
+use AdminPhp\Models\Media;
+use AdminPhp\Models\User;
+use AdminPhp\Modules\Module;
+use AdminPhp\Settings\SettingsStore;
 use App\AdminPhp\Modules\ArticleModule;
+use App\AdminPhp\Modules\MenuItemModule;
 use App\AdminPhp\Modules\PageModule;
 use App\AdminPhp\Settings\SiteSettings;
+use App\Models\MenuItem;
 use App\Models\Page;
-use Gmarineau\AdminPhp\Actions\PublishItem;
-use Gmarineau\AdminPhp\Actions\SaveDraft;
-use Gmarineau\AdminPhp\Actions\SaveModuleContent;
-use Gmarineau\AdminPhp\Actions\StoreAsset;
-use Gmarineau\AdminPhp\Actions\SyncAssetUsages;
-use Gmarineau\AdminPhp\Models\Asset;
-use Gmarineau\AdminPhp\Models\User;
-use Gmarineau\AdminPhp\Modules\Module;
-use Gmarineau\AdminPhp\Settings\SettingsStore;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Seeder;
 use Illuminate\Http\UploadedFile;
@@ -29,7 +31,7 @@ use Illuminate\Support\Carbon;
 class DemoContentSeeder extends Seeder
 {
     /**
-     * @var array<int, Asset>
+     * @var array<int, Media>
      */
     protected array $images = [];
 
@@ -43,6 +45,7 @@ class DemoContentSeeder extends Seeder
         $this->pages();
         $this->settings();
         $this->articles();
+        $this->menu();
     }
 
     protected function users(): void
@@ -54,7 +57,7 @@ class DemoContentSeeder extends Seeder
     }
 
     /**
-     * @return array<int, Asset>
+     * @return array<int, Media>
      */
     protected function images(): array
     {
@@ -67,14 +70,14 @@ class DemoContentSeeder extends Seeder
             ['Jardin', [5, 150, 105], [45, 212, 191]],
         ];
 
-        return array_map(fn (array $image): Asset => $this->storeImage(...$image), $palette);
+        return array_map(fn (array $image): Media => $this->storeImage(...$image), $palette);
     }
 
     /**
      * @param  array{int, int, int}  $from
      * @param  array{int, int, int}  $to
      */
-    protected function storeImage(string $label, array $from, array $to): Asset
+    protected function storeImage(string $label, array $from, array $to): Media
     {
         [$width, $height] = [1600, 1000];
         $image = imagecreatetruecolor($width, $height);
@@ -103,7 +106,7 @@ class DemoContentSeeder extends Seeder
         $path = tempnam(sys_get_temp_dir(), 'adminphp-demo').'.jpg';
         imagejpeg($image, $path, 85);
 
-        return app(StoreAsset::class)->handle(new UploadedFile($path, str($label)->slug().'.jpg', 'image/jpeg', null, true));
+        return app(StoreMedia::class)->handle(new UploadedFile($path, str($label)->slug().'.jpg', 'image/jpeg', null, true));
     }
 
     protected function settings(): void
@@ -118,7 +121,7 @@ class DemoContentSeeder extends Seeder
             'contact_email' => 'contact@example.com',
         ]);
 
-        app(SyncAssetUsages::class)->forSettings($settings);
+        app(SyncMediaUsages::class)->forSettings($settings);
     }
 
     protected function pages(): void
@@ -191,7 +194,8 @@ class DemoContentSeeder extends Seeder
             $input = [
                 'title' => ['fr' => $title, 'en' => rtrim(fake()->sentence(random_int(4, 8)), '.')],
                 'slug' => str($title)->slug()->limit(60, '')->toString().'-'.($index + 1),
-                'lead' => ['fr' => $faker->paragraph(2), 'en' => fake()->paragraph(2)],
+                // The Chapeau field holds 300 characters at most.
+                'lead' => ['fr' => str($faker->paragraph(2))->limit(280)->toString(), 'en' => str(fake()->paragraph(2))->limit(280)->toString()],
                 'cover' => $index % 4 === 3 ? null : $this->randomImage()->id,
                 'content' => $this->articleBlocks(),
             ];
@@ -217,6 +221,38 @@ class DemoContentSeeder extends Seeder
                 $article->delete();
             }
         }
+    }
+
+    /**
+     * Accueil, Articles, À propos and Services with their subpages (one of them a draft, so
+     * hidden on the site), Contact and an external link.
+     */
+    protected function menu(): void
+    {
+        $module = new MenuItemModule;
+        $page = fn (string $slug): array => [['type' => 'page', 'id' => Page::query()->where('slug', $slug)->value('id')]];
+
+        $add = fn (array $title, array $input, ?MenuItem $parent = null): Model => $this->save(
+            $module,
+            ['title' => ['fr' => $title[0], 'en' => $title[1]], ...$input],
+            $parent ? (new MenuItem)->forceFill(['parent_id' => $parent->id]) : null,
+        );
+
+        $add(['Accueil', 'Home'], ['target' => $page('accueil')]);
+        $add(['Articles', 'News'], ['url' => '/articles']);
+
+        $about = $add(['À propos', 'About'], ['target' => $page('a-propos')]);
+        $add(['L’équipe', 'Team'], ['target' => $page('equipe')], $about);
+        $add(['Notre histoire', 'Our story'], ['target' => $page('histoire')], $about);
+
+        // A heading without link: it only opens its submenu.
+        $services = $add(['Services', 'Services'], []);
+        foreach (['renovation' => ['Rénovation', 'Renovation'], 'conseil' => ['Conseil', 'Advice'], 'extension-bois' => ['Extension bois', 'Timber extension']] as $slug => $title) {
+            $add($title, ['target' => $page($slug)], $services);
+        }
+
+        $add(['Contact', 'Contact'], ['target' => $page('contact')]);
+        $add(['Instagram', 'Instagram'], ['url' => 'https://www.instagram.com/', 'opens_in_new_tab' => true]);
     }
 
     /**
@@ -278,7 +314,7 @@ class DemoContentSeeder extends Seeder
         ]];
     }
 
-    protected function randomImage(): Asset
+    protected function randomImage(): Media
     {
         return $this->images[array_rand($this->images)];
     }

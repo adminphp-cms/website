@@ -2,8 +2,8 @@
 
 namespace Database\Factories;
 
+use AdminPhp\Enums\PublicationStatus;
 use App\Models\Article;
-use Gmarineau\AdminPhp\Enums\PublicationStatus;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 

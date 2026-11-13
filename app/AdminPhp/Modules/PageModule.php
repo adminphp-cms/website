@@ -2,14 +2,14 @@
 
 namespace App\AdminPhp\Modules;
 
+use AdminPhp\Fields\Blocks;
+use AdminPhp\Fields\Slug;
+use AdminPhp\Fields\Text;
+use AdminPhp\Modules\Module;
 use App\AdminPhp\Blocks\ImageBlock;
 use App\AdminPhp\Blocks\QuoteBlock;
 use App\AdminPhp\Blocks\TextBlock;
 use App\Models\Page;
-use Gmarineau\AdminPhp\Fields\Blocks;
-use Gmarineau\AdminPhp\Fields\Slug;
-use Gmarineau\AdminPhp\Fields\Text;
-use Gmarineau\AdminPhp\Modules\Module;
 use Illuminate\Database\Eloquent\Model;
 
 class PageModule extends Module

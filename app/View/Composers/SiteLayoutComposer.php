@@ -2,31 +2,27 @@
 
 namespace App\View\Composers;
 
-use App\Models\Page;
-use Gmarineau\AdminPhp\AdminPhp;
-use Illuminate\Database\Eloquent\Collection;
+use AdminPhp\AdminPhp;
+use App\Navigation\MainMenu;
+use App\Navigation\MenuLink;
+use Illuminate\Support\Collection;
 use Illuminate\View\View;
 
 /**
- * Site name and main menu of the layout: the published pages at the top of the tree.
+ * Site name, tagline and main menu of the layout.
  */
 class SiteLayoutComposer
 {
     /**
-     * @var Collection<int, Page>|null
+     * @var Collection<int, MenuLink>|null
      */
     protected ?Collection $navigation = null;
 
-    public function __construct(protected AdminPhp $adminPhp) {}
+    public function __construct(protected AdminPhp $adminPhp, protected MainMenu $mainMenu) {}
 
     public function compose(View $view): void
     {
-        $this->navigation ??= Page::query()
-            ->published()
-            ->whereNull('parent_id')
-            ->whereKeyNot($this->adminPhp->setting('homepage') ?? '')
-            ->orderBy('position')
-            ->get();
+        $this->navigation ??= $this->mainMenu->links();
 
         $view->with([
             'siteName' => $this->adminPhp->setting('site_name', config('app.name')),

@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use AdminPhp\AdminPhp;
 use App\Models\Article;
 use App\Models\Page;
-use Gmarineau\AdminPhp\AdminPhp;
 use Illuminate\View\View;
 
 class HomeController extends Controller
@@ -15,7 +15,7 @@ class HomeController extends Controller
 
         return view('home', [
             'page' => $homepageId ? Page::query()->published()->with('blocks')->find($homepageId) : null,
-            'articles' => Article::query()->published()->with('coverAsset')->latest('published_at')->limit(3)->get(),
+            'articles' => Article::query()->published()->with('coverMedia')->latest('published_at')->limit(3)->get(),
         ]);
     }
 }

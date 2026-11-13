@@ -10,13 +10,13 @@ class ArticleController extends Controller
     public function index(): View
     {
         return view('articles.index', [
-            'articles' => Article::query()->published()->with('coverAsset')->latest('published_at')->paginate(9),
+            'articles' => Article::query()->published()->with('coverMedia')->latest('published_at')->paginate(9),
         ]);
     }
 
     public function show(string $slug): View
     {
-        $article = Article::query()->published()->where('slug', $slug)->with(['blocks', 'coverAsset'])->firstOrFail();
+        $article = Article::query()->published()->where('slug', $slug)->with(['blocks', 'coverMedia'])->firstOrFail();
 
         return view('articles.show', ['article' => $article]);
     }

@@ -4,8 +4,82 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "228c48c12e1af5fe159f350c8fbc95f8",
+    "content-hash": "65df6924866080fa7a4ff878d53d0cda",
     "packages": [
+        {
+            "name": "adminphp-cms/core",
+            "version": "dev-feature/adminphp-cms-core",
+            "dist": {
+                "type": "path",
+                "url": "../adminphp",
+                "reference": "a431e48537859f1c7c037f5233572d242037a79a"
+            },
+            "require": {
+                "illuminate/auth": "^12.0|^13.0",
+                "illuminate/database": "^12.0|^13.0",
+                "illuminate/http": "^12.0|^13.0",
+                "illuminate/routing": "^12.0|^13.0",
+                "illuminate/support": "^12.0|^13.0",
+                "illuminate/validation": "^12.0|^13.0",
+                "illuminate/view": "^12.0|^13.0",
+                "php": "^8.3",
+                "spatie/image": "^3.9",
+                "spatie/laravel-translatable": "^6.0"
+            },
+            "require-dev": {
+                "laravel/pint": "^1.0",
+                "orchestra/testbench": "^10.0|^11.0",
+                "pestphp/pest": "^3.0|^4.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "AdminPhp\\AdminPhpServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "AdminPhp\\": "src/",
+                    "AdminPhp\\Database\\Factories\\": "database/factories/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "AdminPhp\\Tests\\": "tests/",
+                    "Workbench\\App\\": "workbench/app/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ],
+                "format": [
+                    "pint"
+                ],
+                "serve": [
+                    "Composer\\Config::disableProcessTimeout",
+                    "@php vendor/bin/testbench workbench:build --ansi",
+                    "@php vendor/bin/testbench serve --ansi"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Greg Marineau",
+                    "email": "moi@gregmarineau.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A content management admin for Laravel, inspired by Twill",
+            "transport-options": {
+                "symlink": true,
+                "relative": true
+            }
+        },
         {
             "name": "brick/math",
             "version": "1.0.0",
@@ -589,80 +663,6 @@
             ],
             "time": "2025-12-03T09:33:47+00:00",
             "published-time": "2025-12-03T09:37:01+00:00"
-        },
-        {
-            "name": "gmarineau/adminphp",
-            "version": "dev-main",
-            "dist": {
-                "type": "path",
-                "url": "../adminphp",
-                "reference": "3cf272010d34b0fd5150f4bae4d49f7533e701b6"
-            },
-            "require": {
-                "illuminate/auth": "^12.0|^13.0",
-                "illuminate/database": "^12.0|^13.0",
-                "illuminate/http": "^12.0|^13.0",
-                "illuminate/routing": "^12.0|^13.0",
-                "illuminate/support": "^12.0|^13.0",
-                "illuminate/validation": "^12.0|^13.0",
-                "illuminate/view": "^12.0|^13.0",
-                "php": "^8.3",
-                "spatie/image": "^3.9",
-                "spatie/laravel-translatable": "^6.0"
-            },
-            "require-dev": {
-                "laravel/pint": "^1.0",
-                "orchestra/testbench": "^10.0|^11.0",
-                "pestphp/pest": "^3.0|^4.0"
-            },
-            "type": "library",
-            "extra": {
-                "laravel": {
-                    "providers": [
-                        "Gmarineau\\AdminPhp\\AdminPhpServiceProvider"
-                    ]
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Gmarineau\\AdminPhp\\": "src/",
-                    "Gmarineau\\AdminPhp\\Database\\Factories\\": "database/factories/"
-                }
-            },
-            "autoload-dev": {
-                "psr-4": {
-                    "Gmarineau\\AdminPhp\\Tests\\": "tests/",
-                    "Workbench\\App\\": "workbench/app/"
-                }
-            },
-            "scripts": {
-                "test": [
-                    "pest"
-                ],
-                "format": [
-                    "pint"
-                ],
-                "serve": [
-                    "Composer\\Config::disableProcessTimeout",
-                    "@php vendor/bin/testbench workbench:build --ansi",
-                    "@php vendor/bin/testbench serve --ansi"
-                ]
-            },
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Greg Marineau",
-                    "email": "moi@gregmarineau.com",
-                    "role": "Developer"
-                }
-            ],
-            "description": "A content management admin for Laravel, inspired by Twill",
-            "transport-options": {
-                "symlink": true,
-                "relative": true
-            }
         },
         {
             "name": "graham-campbell/result-type",
@@ -10609,7 +10609,7 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "gmarineau/adminphp": 20
+        "adminphp-cms/core": 20
     },
     "prefer-stable": true,
     "prefer-lowest": false,

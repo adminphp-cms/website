@@ -1,10 +1,10 @@
 <?php
 
+use AdminPhp\Models\Setting;
 use App\AdminPhp\Modules\ArticleModule;
 use App\AdminPhp\Modules\PageModule;
 use App\Models\Article;
 use App\Models\Page;
-use Gmarineau\AdminPhp\Models\Setting;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);

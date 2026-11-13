@@ -2,11 +2,12 @@
 
 namespace App\Providers;
 
+use AdminPhp\AdminPhp;
 use App\AdminPhp\Modules\ArticleModule;
+use App\AdminPhp\Modules\MenuItemModule;
 use App\AdminPhp\Modules\PageModule;
 use App\AdminPhp\Settings\SiteSettings;
 use App\View\Composers\SiteLayoutComposer;
-use Gmarineau\AdminPhp\AdminPhp;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
@@ -27,7 +28,7 @@ class AppServiceProvider extends ServiceProvider
     {
         $adminPhp = app(AdminPhp::class);
 
-        $adminPhp->registerModules([ArticleModule::class, PageModule::class]);
+        $adminPhp->registerModules([ArticleModule::class, PageModule::class, MenuItemModule::class]);
         $adminPhp->registerSettings(SiteSettings::class);
 
         View::composer('components.layouts.site', SiteLayoutComposer::class);

@@ -2,16 +2,16 @@
 
 namespace App\AdminPhp\Modules;
 
+use AdminPhp\Fields\Blocks;
+use AdminPhp\Fields\Image;
+use AdminPhp\Fields\Slug;
+use AdminPhp\Fields\Text;
+use AdminPhp\Modules\Column;
+use AdminPhp\Modules\Module;
 use App\AdminPhp\Blocks\ImageBlock;
 use App\AdminPhp\Blocks\QuoteBlock;
 use App\AdminPhp\Blocks\TextBlock;
 use App\Models\Article;
-use Gmarineau\AdminPhp\Fields\Blocks;
-use Gmarineau\AdminPhp\Fields\Image;
-use Gmarineau\AdminPhp\Fields\Slug;
-use Gmarineau\AdminPhp\Fields\Text;
-use Gmarineau\AdminPhp\Modules\Column;
-use Gmarineau\AdminPhp\Modules\Module;
 
 class ArticleModule extends Module
 {
@@ -38,7 +38,8 @@ class ArticleModule extends Module
         return [
             Text::make('title')->label('Titre')->translatable()->required(),
             Slug::make('slug')->label('Adresse')->from('title')->prefix('/articles/'),
-            Text::make('lead')->label('Chapeau')->translatable()->multiline(),
+            Text::make('lead')->label('Chapeau')->translatable()->multiline()->maxLength(300)
+                ->note('Résumé de deux ou trois phrases, repris dans la liste des articles.'),
             Image::make('cover')->label('Couverture'),
             Blocks::make('content')->label('Contenu')->allow([TextBlock::class, ImageBlock::class, QuoteBlock::class]),
         ];

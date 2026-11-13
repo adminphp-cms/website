@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
-use Gmarineau\AdminPhp\Concerns\HasBlocks;
-use Gmarineau\AdminPhp\Concerns\HasPublication;
-use Gmarineau\AdminPhp\Models\Asset;
+use AdminPhp\Concerns\HasBlocks;
+use AdminPhp\Concerns\HasPublication;
+use AdminPhp\Models\Media;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -22,12 +22,12 @@ class Article extends Model
     public array $translatable = ['title', 'lead'];
 
     /**
-     * The image of the Couverture field, which stores the id of its asset.
+     * The image of the Couverture field, which stores the id of its media.
      *
-     * @return BelongsTo<Asset, $this>
+     * @return BelongsTo<Media, $this>
      */
-    public function coverAsset(): BelongsTo
+    public function coverMedia(): BelongsTo
     {
-        return $this->belongsTo(Asset::class, 'cover');
+        return $this->belongsTo(Media::class, 'cover');
     }
 }

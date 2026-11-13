@@ -2,10 +2,10 @@
 
 namespace App\Models;
 
-use Gmarineau\AdminPhp\Concerns\HasBlocks;
-use Gmarineau\AdminPhp\Concerns\HasNesting;
-use Gmarineau\AdminPhp\Concerns\HasPosition;
-use Gmarineau\AdminPhp\Concerns\HasPublication;
+use AdminPhp\Concerns\HasBlocks;
+use AdminPhp\Concerns\HasNesting;
+use AdminPhp\Concerns\HasPosition;
+use AdminPhp\Concerns\HasPublication;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;

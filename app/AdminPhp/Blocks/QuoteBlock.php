@@ -2,8 +2,8 @@
 
 namespace App\AdminPhp\Blocks;
 
-use Gmarineau\AdminPhp\Blocks\Block;
-use Gmarineau\AdminPhp\Fields\Text;
+use AdminPhp\Blocks\Block;
+use AdminPhp\Fields\Text;
 
 class QuoteBlock extends Block
 {

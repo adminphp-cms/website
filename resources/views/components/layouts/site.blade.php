@@ -16,12 +16,9 @@
             <div class="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-4 px-4 py-5">
                 <a href="{{ route('home') }}" class="text-lg font-semibold text-stone-900">{{ $siteName }}</a>
 
-                <nav class="flex flex-wrap gap-x-5 gap-y-2 text-sm">
-                    <a href="{{ route('articles.index') }}" @class(['hover:text-stone-950', 'font-semibold text-stone-950' => request()->routeIs('articles.*')])>Articles</a>
-                    @foreach ($navigation as $item)
-                        <a href="{{ route('pages.show', $item->slug) }}" @class(['hover:text-stone-950', 'font-semibold text-stone-950' => request()->is($item->slug)])>{{ $item->title }}</a>
-                    @endforeach
-                </nav>
+                @if ($navigation->isNotEmpty())
+                    <x-main-menu :links="$navigation" />
+                @endif
             </div>
         </header>
 
