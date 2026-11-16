@@ -17,6 +17,6 @@
             <x-adminphp::image :media="$article->coverMedia" sizes="(min-width: 768px) 768px, 100vw" loading="eager" class="mb-10 w-full rounded-xl" />
         @endif
 
-        <x-blocks :blocks="$article->blocks" />
+        <div class="space-y-8">{{ $article->renderBlocks() }}</div>
     </article>
 </x-layouts.site>

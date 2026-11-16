@@ -7,7 +7,7 @@
 
         <h1 class="mt-4 mb-8 text-4xl font-bold text-stone-900">{{ $page->title }}</h1>
 
-        <x-blocks :blocks="$page->blocks" />
+        <div class="space-y-8">{{ $page->renderBlocks() }}</div>
 
         @if ($children->isNotEmpty())
             <nav class="mt-12 grid gap-4 sm:grid-cols-2">

@@ -130,9 +130,10 @@
 &lt;<span class="text-sky-300">x-adminphp::image</span>
     <span class="text-amber-200">:media</span>=<span class="text-emerald-300">"$project->coverMedia"</span> /&gt;
 
-<span class="text-violet-400">@@foreach</span> ($project->blocks <span class="text-violet-400">as</span> $block)
-    <span class="text-violet-400">@@include</span>(<span class="text-emerald-300">"blocks.{$block->type}"</span>)
-<span class="text-violet-400">@@endforeach</span></x-landing-step>
+@{{ $project-><span class="text-sky-300">renderBlocks</span>() }}
+
+<span class="text-zinc-500">&#123;&#123;-- blocks/text.blade.php --&#125;&#125;</span>
+&lt;<span class="text-sky-300">div</span>&gt;@{{ $block-><span class="text-sky-300">richText</span>(<span class="text-emerald-300">'body'</span>) }}&lt;/<span class="text-sky-300">div</span>&gt;</x-landing-step>
                     </div>
                 </div>
             </section>

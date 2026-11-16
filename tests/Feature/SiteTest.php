@@ -20,7 +20,7 @@ it('presents AdminPHP on the homepage', function () {
         ->assertSee('composer require adminphp-cms/core')
         ->assertSee('&#123;&#123;-- projects/show.blade.php --&#125;&#125;', false)
         ->assertSee('{{ $project->title }}', false)
-        ->assertSee('@foreach', false)
+        ->assertSee('renderBlocks', false)
         ->assertSee('https://github.com/adminphp-cms/starter');
 });
 
