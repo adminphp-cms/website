@@ -1,0 +1,88 @@
+name: build
+
+on:
+  push:
+    branches:
+      - main
+    # Releases are tagged by hand: `git tag v1.2.3 && git push origin v1.2.3`.
+    # A tag pushed by a person triggers this, unlike one pushed by Actions.
+    tags:
+      - 'v*'
+  pull_request:
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build & Push
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          path: website
+          persist-credentials: false
+
+      # The image installs adminphp-cms/core from the path repository
+      # ../adminphp, passed to the build as the `adminphp` named context.
+      - name: Checkout adminphp-cms/core
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: adminphp-cms/core
+          ref: main
+          path: adminphp
+          persist-credentials: false
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
+
+      - name: Log in to the container registry
+        if: github.event_name == 'push'
+        uses: docker/login-action@v4
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # The semver and latest tags only come from a v* tag, so latest always
+      # points at the last release rather than the tip of main.
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v6
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          flavor: latest=false
+          tags: |
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=raw,value=latest,enable=${{ startsWith(github.ref, 'refs/tags/v') }}
+            type=ref,event=branch
+            type=sha,format=short
+          labels: |
+            org.opencontainers.image.title=AdminPHP Website
+            org.opencontainers.image.description=The AdminPHP website, built with AdminPHP.
+
+      # Pull requests build the image to prove it still works; pushes to main
+      # and v* tags are the ones that publish it.
+      - name: Build and push the image
+        uses: docker/build-push-action@v7
+        with:
+          context: website
+          file: website/.docker/Dockerfile
+          build-contexts: |
+            adminphp=adminphp
+          push: ${{ github.event_name == 'push' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
